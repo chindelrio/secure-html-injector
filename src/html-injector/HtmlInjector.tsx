@@ -1,10 +1,12 @@
-import React, { ReactNode, createElement, useCallback, useMemo } from 'react';
+import React, { ReactNode, createElement, useCallback, useMemo, useRef } from 'react';
 import DOMPurify from 'dompurify';
 
 interface HtmlInjectorProps {
   htmlString: string;
 }
 const HtmlInjector = ({ htmlString }: HtmlInjectorProps) => {
+
+  const positionRef = useRef(0);
 
   const formatStyles = useCallback((style: string) => {
     const _toCamelCase = (str: string) =>
@@ -30,8 +32,9 @@ const HtmlInjector = ({ htmlString }: HtmlInjectorProps) => {
       const el = node as Element;
       const children = Array.from(el.childNodes).map(domNodeToReact);
       const props: Record<string, unknown> = {};
+      props.key = positionRef.current;
+      positionRef.current += 1;
       for (const attr of Array.from(el.attributes)) {
-        props.key = attr.name;
         if (attr.name === "class") {
           props["className"] = attr.value;
         } else if (attr.name === "style") {
@@ -55,8 +58,9 @@ const HtmlInjector = ({ htmlString }: HtmlInjectorProps) => {
   }, [domNodeToReact]);
 
   const sanitizedHtml = useMemo(() => {
-    if (typeof htmlString !== "string" || !htmlString.startsWith('<') ) return "";
-    return DOMPurify.sanitize(htmlString);
+    const cleanedHtml = typeof htmlString === "string" ? htmlString.replace(/\r?\n|\r/g, '').replace(/\s+/g, ' ').trim() : htmlString;
+    if (typeof htmlString !== "string" || !htmlString.trim().startsWith('<') ) return "";
+    return DOMPurify.sanitize(cleanedHtml);
   }, [htmlString]);
 
   const parsedHtml = useMemo(() =>
