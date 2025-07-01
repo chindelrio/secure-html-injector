@@ -22,7 +22,7 @@ npm install secure-html-injector
 
 ```tsx
 import React from 'react';
-import HtmlInjector from 'secure-html-injector';
+import {HtmlInjector} from 'secure-html-injector';
 
 const App = () => {
   const htmlString = `
@@ -46,7 +46,7 @@ export default App;
 
 ```tsx
 import React from 'react';
-import HtmlInjector from 'secure-html-injector';
+import {HtmlInjector} from 'secure-html-injector';
 
 const App = () => {
   const styledHtml = `
@@ -78,7 +78,7 @@ export default App;
 
 ```tsx
 import React, { useState } from 'react';
-import HtmlInjector from 'secure-html-injector';
+import {HtmlInjector} from 'secure-html-injector';
 
 const DynamicContent = () => {
   const [content, setContent] = useState(`
